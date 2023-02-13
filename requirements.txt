@@ -1,0 +1,6 @@
+mkdocs-minify-plugin
+mkdocs-material
+pymdown-extensions
+mkdocs-roamlinks-plugin
+mkdocs-section-index
+mkdocs-macros-plugin
