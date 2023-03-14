@@ -4,13 +4,13 @@
 
 ```
 # replicated_nvme
-ceph osd crush rule create-replicated replicated_nvme default osd nvme
+ceph osd crush rule create-replicated replicated_nvme default host nvme
 
 # replicated_ssd
-ceph osd crush rule create-replicated replicated_ssd default osd ssd
+ceph osd crush rule create-replicated replicated_ssd default host ssd
 
 # replicated_all
-ceph osd crush rule create-replicated replicated_all default osd
+ceph osd crush rule create-replicated replicated_all default host
 ```
 
 
@@ -52,5 +52,22 @@ ceph dashboard feature disable cephfs iscsi mirroring
 
 systemctl restart ceph-mgr@mill.service
 
+# access dashboard at https://mill.mgmt.socozy.casa:8443
 ```
 
+
+## A manager has recently crashed
+
+```
+# display crashes
+ceph crash ls
+
+# view crash info
+ceph crash info <id>
+
+# after remediating, clear the crash
+ceph crash archive <id>
+
+# or
+ceph crash archive-all
+```
