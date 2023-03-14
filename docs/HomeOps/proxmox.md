@@ -2,6 +2,140 @@
 
 I run Proxmox VE 7 in a 3 node cluster. Each node has 2x 2TB disk in ZFS RAID 1 (mirror). Each node also has access to NFS via my TrueNAS for shared storage. I've found running Ceph at home to be more trouble that its worth.
 
+### TODO
+
+Notes for my future self:
+
+* Setup zfs autotrim
+* Investigate trim for ceph osds
+
+## Install With External Boot Drive
+
+Assumed setup:
+
+* External NVME-via-USB boot disk
+* Internal M.2 NVME for ceph
+* Internal SATA SSD for ceph
+
+Ensure the internal disks are wiped, any remnants of a GPT partition table or
+ZFS will cause problems. See the section about wiping disks.
+
+When installing:
+
+* Choose external disk as the install disk
+* Use ZFS RAID-0
+* English keyboard layout
+* Use mgmt vlan as the network config
+* Use fully qualified domain as the hostname
+
+After install, setup zfs encryption:
+
+[source](https://forum.proxmox.com/threads/encrypting-proxmox-ve-best-methods.88191/#post-387731)
+
+* Use F10 to PXE boot from `Ubuntu 22.04`
+* Follow create an encrypted pool ([source](https://gist.github.com/yvesh/ae77a68414484c8c79da03c4a4f6fd55))
+
+    ```
+    # Import the old 
+    zpool import -f -NR /tmp rpool
+    
+    # check Status
+    zpool status
+
+    # Make a snapshot of the current one
+    zfs snapshot -r rpool/ROOT@copy
+
+    # Send the snapshot to a temporary root
+    zfs send -R rpool/ROOT@copy | zfs receive rpool/copyroot
+
+    # Destroy the old unencrypted root
+    zfs destroy -r rpool/ROOT
+
+    # Create a new zfs root, with encryption turned on
+    zfs create -o encryption=aes-256-gcm -o keyformat=passphrase rpool/ROOT
+    
+    # enter passphrase
+
+    # Copy the files from the copy to the new encrypted zfs root
+    zfs send -R rpool/copyroot/pve-1@copy | zfs receive -o encryption=on rpool/ROOT/pve-1
+
+    # Set the Mountpoint
+    zfs set mountpoint=/ rpool/ROOT/pve-1
+    
+    # Check which ZFS pools are encrypted
+    zfs get encryption
+    
+    # Enable autotrim
+    zpool set autotrim=on rpool
+    
+    # Enable compression
+    zfs set recordsize=1M compression=zstd-3 rpool
+
+
+    # Export the pool again, so you can boot from it
+    zpool export rpool
+    
+    # Reboot into PVE
+    
+    # Cleanup old root
+    zfs destroy -r rpool/copyroot
+
+    # Check which ZFS pools are encrypted
+    zfs get encryption
+    
+    # Don't forget to run the rmblr.proxmox_setup role to enable zfs decryption at boot over ssh
+
+    ```
+
+
+
+After boot:
+
+1.Run setup playbook in bootstrap mode
+    ```
+    ansible-playbook run.yml --tags proxmox-setup --limit peirce.mgmt.socozy.casa -e '{"proxmox_acme_enabled": false, "proxmox_upgrade": true }' --ask-pass
+    ```
+3. `systemctl restart networking`
+4. `systemctl reboot`
+5. Join node to cluster (see below)
+
+## Wiping disks for clean install
+
+1. PXE boot into System Rescue CD
+2. Use gparted to
+  - delete all partitions
+  - format with "clear"
+  - create a fresh gpt partition
+3. Reboot and PXE boot into Proxmox VE to continue the install
+
+## Reinstall A Node
+
+Goal: Reinstall Proxmox on a node and reintroduce it to the cluster with the *same* name and network settings.
+
+Relevant docs: https://pve.proxmox.com/pve-docs/pve-admin-guide.html#_remove_a_cluster_node
+
+```
+# 1. poweroff node
+# 2. delete the node (from another node)
+pvecm delnode <NODE NAME>
+# 3. reinstall proxmox on the node
+# 4. ssh into the node you want to rejoin
+pvecm add <ANOTHER-NODE-IP> --use_ssh 1 --link0 address=<MY-DATA-IP>
+
+# 5. update certs
+pvecm updatecerts
+
+# 6. munge known hosts
+#    from every  node (including the new one), run `ssh <othernode>` and delete the corresponding lines,
+#    until you don't get any more known host errors.
+
+# 7. If the old node was part of the ceph cluster then you need to scrube any
+#    mention of that node from /etc/pve/ceph.conf
+
+
+
+```
+
 ### Install checklist
 
 From Proxmox VE 7 the install is straightforward, just choose your settings and go.
@@ -20,9 +154,13 @@ This checklist is automated with my [`rmblr-proxmox-setup` role]({{ homeops_url 
 
 * Install pve-no-subscription repo
 * Configure the network interfaces
+* Install CPU microcode to mitigate CPU bugs
 * Enable backports
 * Remove pve-enterprise repo
 * Disable IPV6
+* Disable Wifi and Bluetooth
+* Setup dropbear-initramfs to provide root zfs encryption key over ssh at boot time
+* Setup encrypted ZFS data storage for guests
 * Install my admin tools
 * Install acme plugin and cloudflare DNS configuration
 * Install borg+borgmatic and configure backups with Healthchecks
@@ -96,11 +234,10 @@ system. All disks are now bootable.
 
 ### Tailscale in a container:
 
+To run tailscale succesfully in an LXC container you must add the following to the container's config:
 
-Add 
-
-lxc.cgroup.devices.allow: c 10:200 rwm
-lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
+    lxc.cgroup.devices.allow: c 10:200 rwm
+    lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
 
 ### Setting up NFS Share
 
@@ -115,7 +252,7 @@ Use an NFS share for storing snippets, isos, etc
 4. Edit the nfs share
    MapallUser -> nfs user
    
-5. Storage > Poosl > NFS Dataset > Edit Perms
+5. Storage > Pools > NFS Dataset > Edit Perms
 
     Owner: nfs user
     Group: Wheel
@@ -123,6 +260,29 @@ Use an NFS share for storing snippets, isos, etc
 6. In proxmox: Datacenter > Storage > Add NFS
 
 source: https://www.youtube.com/watch?v=zeOe26fw7lo
+
+### Single NIC on Trunk Port but using VLAN
+
+```
+auto lo
+iface lo inet loopback
+
+iface enp60s0 inet manual
+
+auto vmbr0
+iface vmbr0 inet manual
+    bridge-ports enp60s0
+    bridge-stp off
+    bridge-fd 0
+    bridge-vlan-aware yes
+    bridge-vids 2-4094
+    bridge-pvid 1
+
+auto vmbr0.11 
+iface vmbr0.11 inet static
+    address 10.9.10.21/23
+    gateway 10.9.10.1
+```
 
 ### Multiple VLANs with Single NIC
 
@@ -310,3 +470,57 @@ on proxmox host:
    ```
 
 4. make sure the snippet file exists, and edit the file for the corresponding server+client number
+
+
+## ZFS Cannot import rpool at boot
+
+source0: https://www.thomas-krenn.com/en/wiki/ZFS_cannot_import_rpool_no_such_pool_available_-_fix_Proxmox_boot_problem
+source1: https://forum.proxmox.com/threads/failed-to-import-rpool-on-bootup-after-system-update.37884/
+
+
+### Problem 
+
+The Proxmox system does not boot because the rpool created by Proxmox could not be imported because it was not found.
+
+```
+Command: /sbin/zpool import -N "rpool"
+Message: cannot import 'rpool' : no such pool available
+Error: 1
+Failed to import pool 'rpool'.
+Manually import the pool and exit.
+```
+
+### Cause
+
+The disks are not fully addressable at the time of the ZFS pool import and
+therefore the rpool cannot be imported.[1]​ 
+
+### Solution
+
+Manually import the zpool with the name rpool and then boot the system again
+with exit. Afterwards you can change the ZFS defaults, so that before and after
+the mounting of the ZFS pool 5 seconds will be waited.
+
+```
+# ZFS rpool is imported manually
+
+zpool import -N rpool
+exit
+
+# ZFS defaults are changed
+
+nano etc/default/zfs
+
+# ZFS sleep parameters are set to 5
+
+ZFS_INITRD_PRE_MOUNTROOT_SLEEP='5'
+ZFS_INITRD_POST_MODPROBE_SLEEP='5'
+
+# initramfs is updated
+
+update-initramfs -u
+```
+
+Afterwards you can reboot the system with reboot and observe the boot process.
+Before and after the import of the rpool now up to 5 seconds are waited, so
+that the system can start now properly. 
