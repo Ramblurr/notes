@@ -2,13 +2,6 @@
 
 I run Proxmox VE 7 in a 3 node cluster. Each node has 2x 2TB disk in ZFS RAID 1 (mirror). Each node also has access to NFS via my TrueNAS for shared storage. I've found running Ceph at home to be more trouble that its worth.
 
-### TODO
-
-Notes for my future self:
-
-* Setup zfs autotrim
-* Investigate trim for ceph osds
-
 ## Install With External Boot Drive
 
 Assumed setup:
