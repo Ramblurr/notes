@@ -9,7 +9,7 @@ I use a lot of Raspberry PIs. I want bootstraping them from a fresh SD card to b
 
 1. Download `Raspberry Pi OS Lite` from https://www.raspberrypi.com/software/operating-systems/
 2. Uncompress with `xz -d `
-2. Use [`main.go`]({{ homeops_url }}/pi/main.go)  to get the mount point offsets 
+2. Use [`main.go`]({{ homeops_url }}/iot/pi/main.go)  to get the mount point offsets 
 
     `go run main.go ./2023<imagename>`
 
@@ -18,7 +18,7 @@ I use a lot of Raspberry PIs. I want bootstraping them from a fresh SD card to b
       `mount -v -o offset=272629760,loop ./2022-09-22-raspios-bullseye-arm64-lite.img /mnt`
 
 4. Inside the mountpoint add the following files
-    * Setup userconf (see password manager for contents) - this creates the default user. It looks like this: `admin:$<PASSWORED HASH>`. The contents can be generated with [`password.py`]({{ homeops_url }}/pi/password.py)
+    * Setup userconf (see password manager for contents) - this creates the default user. It looks like this: `admin:$<PASSWORED HASH>`. The contents can be generated with [`password.py`]({{ homeops_url }}/iot/pi/password.py)
 
     `vim /mnt/userconf`
 
@@ -26,13 +26,13 @@ I use a lot of Raspberry PIs. I want bootstraping them from a fresh SD card to b
 
     `touch /mnt/ssh`
 
-6. Copy [firstboot.sh]({{ homeops_url }}/pi/firstboot.sh) setup script:
+6. Copy [firstboot.sh]({{ homeops_url }}/iot/pi/firstboot.sh) setup script:
 
     `cp firstboot.sh /mnt/firstboot.sh`
 
 7. umount the boot partition
 8. Then mount the second mount point (this is the root / partition)
-9. Add [`firstboot.service`]({{ homeops_url }}/pi/firstboot.service) to `/mnt/lib/systemd/system/firstboot.service`
+9. Add [`firstboot.service`]({{ homeops_url }}/iot/pi/firstboot.service) to `/mnt/lib/systemd/system/firstboot.service`
 10. Enable the service:
 
     `cd /mnt/etc/systemd/system/multi-user.target.wants && ln -s /lib/systemd/system/firstboot.service .`
