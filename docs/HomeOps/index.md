@@ -62,19 +62,7 @@ My primary tools for managing my infra:
 | PiKVM Raspberry Pi 4 2GB                                         | 1     |
 | TESMART Managed multiport KVM switch                             | 1     |
 
-
-#### :bullettrain_side: Network Hardware
-| Device                               | Connection              | Card                           |
-|--------------------------------------|-------------------------|--------------------------------|
-| USW-Pro-24                           | SFP+                    | built-in                       |
-| NAS                                  | SFP+                    | Intel x520                     |
-| Mikrotik CRS309-1G-8S+IN 10GB Switch | builtin                 | -                              |
-| Lenovo M720q VyOS                    | SFP+                    | Mellanox ConnectX-3 Pro CX322A |
-| NUC1                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
-| NUC2                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
-| NUC3                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
-| NUC4                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
-| NUC5                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
+[:arrow_right: More info on my 10GbE setup](10GbE.md)
 
 
 ## :handshake:&nbsp; Thanks
