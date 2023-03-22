@@ -517,3 +517,14 @@ update-initramfs -u
 Afterwards you can reboot the system with reboot and observe the boot process.
 Before and after the import of the rpool now up to 5 seconds are waited, so
 that the system can start now properly. 
+
+
+## Terraform Provider for Proxmox
+
+Configure the terraform api user:
+
+```sh
+pveum role add Terraform -privs "Datastore.AllocateSpace Datastore.Audit Pool.Allocate Sys.Audit VM.Allocate VM.Audit VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.PowerMgmt"
+pveum user add terraform@pve --password changeme
+pveum aclmod / -user terraform@pve -role Terraform
+```
