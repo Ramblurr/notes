@@ -86,6 +86,12 @@ Thanks to all the people who donate their time to the [Kubernetes @Home](https:/
 And also a big thanks to the great community from the [Self-Hosted Podcast](https://www.jupiterbroadcasting.com/show/self-hosted/) (and Jupiter Broadcasting in general!). It's a friendly community of FOSS, Linux, Self-Hosting advocates.
 
 
-[0]: https://github.com/ramblurr/home-ops
+
+
+### 🔏 License
+
+Different parts of my [home-ops repo][0] have different licenses. Refer to the LICENSE file in the various subdirectories.
 
 <div>Datacenter iconmade by <a href="https://creativemarket.com/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
+[0]: https://github.com/ramblurr/home-ops
