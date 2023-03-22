@@ -13,64 +13,79 @@
 
 # :book:&nbsp; Overview
 
-Welcome to my home operations repo.
+Welcome to my home operations documentation.
 
-This repo contains the configuration for my bare-metal servers, virtual
-machines, containers, and proxmox cluster.
+My [home-ops repo][0] contains the configuration for my bare-metal servers,
+virtual machines, proxmox cluster, k8s cluster, dns, and more.
 
 ## :wrench:&nbsp; Tools
 
 My primary tools for managing my infra:
 
-| Tool     | Purpose                              |
-| -------- | ------------------------------------ |
-| ansible  | configure the  servers         |
-| sops     | encrypt secrets on disk              |
+| Tool      | Purpose                                     |
+|-----------|---------------------------------------------|
+| ansible   | configure the  servers                      |
+| sops      | encrypt secrets on disk                     |
+| terraform | Configuring a few cloud resources I rely on |
+| flux      | For gitopsing my k8s cluster                |
 
 ## :computer:&nbsp; Hardware
 
 ### Compute and Storage
 
-| Device              | Count | OS Disk Size | Data Disk Size             | Ram    | Purpose        |
-|---------------------|-------|--------------|----------------------------|--------|----------------|
-| TrueNAS             | 1     | 256GB NVMe   | 4x8TB ZFS, 8x12 TB ZFS     | 32GB   | shared storage |
-| Intel NUCNUC10i7FNH | 3     | -            | 2TB NVMe, 2TB SATA SDD ZFS | 64GB   | Proxmox Nodes  |
-| Raspberry PI 3 B    | 2     | 8GB MMC      | N/A                        | 512 MB | dns1 and dns2  |
+| Device                  | Count | OS Disk Size          | Data Disk Size                | Ram    | Purpose                                 |
+|-------------------------|-------|-----------------------|-------------------------------|--------|-----------------------------------------|
+| TrueNAS                 | 1     | 256GB NVMe            | 4x8TB ZFS, 8x12 TB ZFS        | 32GB   | shared storage                          |
+| Intel NUC 10 i7FNH      | 4     | 256 GB NVMe (via USB) | 2TB NVMe Ceph, 2TB SDD Ceph   | 64GB   | Proxmox Nodes                           |
+| Intel NUC 12 WSH i50002 | 1     | 256 GB                | 800TB NVMe Ceph, 2TB SSD Ceph | 64GB   | Proxmox Nodes                           |
+| Raspberry PI 3 B        | 3     | 8GB MMC               | N/A                           | 512 MB | dns1, dns2, wan-lte-failover            |
+| Raspberry PI 4          | 4     | 8GB MMC               | N/A                           | 2GB    | octoprint,  mycroft, zigbee2mqtt, pikvm |
 
 
 ### Networking
 
-| Device                                                            | Count |
-|-------------------------------------------------------------------|-------|
-| Unifi Security Gateway (USG)                                      | 1     |
-| Unifi Switch 24 port POE                                          | 1     |
-| Unifi Switch Pro 24 port POE                                      | 1     |
-| Unifi Switch 8 port POE                                           | 2     |
-| Unifi Switch Flex                                                 | 2     |
-| Unifi AP AC-lite                                                  | 2     |
-| Unifi Access Point U6 Lite                                        | 1     |
-| Unifi Cloud Key                                                   | 1     |
-| ISP Modem                                                         | 1     |
+| Device                                                           | Count |
+|------------------------------------------------------------------|-------|
+| ISP Modem (1Gbit/100Mbit)                                        | 1     |
+| Lenovo M720q VyOS router (i5-8400T, 8GB DDR4)                    | 1     |
+| Unifi Switch 24 port POE                                         | 1     |
+| Unifi Switch Pro 24 port                                         | 1     |
+| Unifi Switch 8 port POE                                          | 2     |
+| Unifi Switch Flex                                                | 2     |
+| Unifi AP AC-lite                                                 | 2     |
+| Unifi Access Point U6 Lite                                       | 1     |
+| Unifi Cloud Key                                                  | 1     |
+| Unifi In-Wall HD Access Point                                    | 1     |
+| Mikrotik CRS309-1G-8S+IN 10GB Switch                             | 1     |
 | Raspberry PI 3 B - [WAN2 failover - LTE](rpi-usg-4g-failover.md) | 1     |
-| Mikrotik CRS309-1G-8S+IN 10GB Switch                              | 1     |
-| PiKVM Raspberry Pi 4 2GB                                          | 1     |
-| TESMART Managed multiport KVM switch                              | 1     |
+| Raspberry PI 3 B - DNS nodes                                     | 2     |
+| PiKVM Raspberry Pi 4 2GB                                         | 1     |
+| TESMART Managed multiport KVM switch                             | 1     |
 
 
-#### 10GbE Network Hardware
-| Device                               | Connection        | Card                  |
-|--------------------------------------|-------------------|-----------------------|
-| USW-24                               | SFP+              | built-in              |
-| USW-Pro-24                           | SFP+              | built-in              |
-| NAS                                  | SFP+              | Intel x520            |
-| Mikrotik CRS309-1G-8S+IN 10GB Switch | builtin           |                       |
-| NUC1                                 | SFP+/Thunderbolt3 | Sonnet ‎SOLO10G-SFP-T3 |
-| NUC2                                 | SFP+/Thunderbolt3 | Sonnet ‎SOLO10G-SFP-T3 |
-| NUC3                                 | SFP+/Thunderbolt3 | Sonnet ‎SOLO10G-SFP-T3 |
+#### :bullettrain_side: Network Hardware
+| Device                               | Connection              | Card                           |
+|--------------------------------------|-------------------------|--------------------------------|
+| USW-Pro-24                           | SFP+                    | built-in                       |
+| NAS                                  | SFP+                    | Intel x520                     |
+| Mikrotik CRS309-1G-8S+IN 10GB Switch | builtin                 | -                              |
+| Lenovo M720q VyOS                    | SFP+                    | Mellanox ConnectX-3 Pro CX322A |
+| NUC1                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
+| NUC2                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
+| NUC3                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
+| NUC4                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
+| NUC5                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
 
 
 ## :handshake:&nbsp; Thanks
 
-Many thanks to the [Self-Hosted](https://selfhosted.show/) community ([Discord](https://discord.gg/U3Gvr54VRp)).
+
+
+Thanks to all the people who donate their time to the [Kubernetes @Home](https://discord.gg/k8s-at-home) Discord community. A lot of inspiration for my cluster comes from the people that have shared their clusters using the [k8s-at-home](https://github.com/topics/k8s-at-home) GitHub topic. Be sure to check out the [Kubernetes @Home search](https://nanne.dev/k8s-at-home-search/) for ideas on how to deploy applications or get ideas on what you can deploy.
+
+And also a big thanks to the great community from the [Self-Hosted Podcast](https://www.jupiterbroadcasting.com/show/self-hosted/) (and Jupiter Broadcasting in general!). It's a friendly community of FOSS, Linux, Self-Hosting advocates.
+
+
+[0]: https://github.com/ramblurr/home-ops
 
 <div>Datacenter iconmade by <a href="https://creativemarket.com/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

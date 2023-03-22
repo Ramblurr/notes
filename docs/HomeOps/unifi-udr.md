@@ -1,5 +1,9 @@
 # Unifi UDR
 
+!!! warning annotate "Warning"
+
+    I do not use Unifi routing gear myself. These notes exist because ocassionally I troubleshoot for friends that do.
+
 To run scripts at boot install:
 
 https://github.com/unifi-utilities/unifios-utilities/tree/main/on-boot-script
