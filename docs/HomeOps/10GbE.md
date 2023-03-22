@@ -21,6 +21,10 @@ My 10GbE network is used for Ceph and Proxmox replication.
 * **OS**: [VyOS Rolling](./VyOS.md)
 * **Card:** Mellanox ConnectX-3 Pro CX322A SFP+
 
+[Here is my 3D model](https://www.printables.com/model/428540-lenovo-m720q-baffle-for-melanox-cx312a-and-melanox) for the baffle I 3d printed (it's a little jank, but works!)
+
+![baffle](m720q-baffle.png)
+
 ### Power Draw Energy Usage
 
 [![power-draw-graph](m720q-power-draw.png)](m720q-power-draw.png)
