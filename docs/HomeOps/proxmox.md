@@ -2,6 +2,64 @@
 
 I run Proxmox VE 7 in a 3 node cluster. Each node has 2x 2TB disk in ZFS RAID 1 (mirror). Each node also has access to NFS via my TrueNAS for shared storage. I've found running Ceph at home to be more trouble that its worth.
 
+## iGPU Passthrough to VM (Intel Integrated Graphics)
+
+First you need to figure out if you are using grub or systemd-boot.
+
+If you are using ZFS on root, then you are definitely using systemd-boot (as of PVE 6 and 7).
+
+If `/sys/firmware/efi/` exists and has stuff inside, you are probably using systemd-boot.
+
+
+### Add kernel cmdline flags
+
+If you are using grub you need to edit `/etc/default/grub`, if you are using systemd-boot you need to edit `/etc/kernel/cmdline`.
+
+Add the following kernel cmdline flags after whatever is already there. For grub this will be the `GRUB_CMDLINE_LINUX_DEFAULT` var, for systemd-boot it is a bare file.
+
+```
+intel_iommu=on i915.enable_gvt=1 iommu=pt
+```
+
+If using grub, `update-grub`
+
+If using systemd-boot, `proxmox-boot-tool refresh`
+
+### Edit modules
+
+Edit `/etc/modules` and add:
+
+```
+# Modules required for PCI passthrough
+vfio
+vfio_iommu_type1
+vfio_pci
+vfio_virqfd
+
+# Modules required for Intel GVT-g Split
+kvmgt
+```
+
+Reboot.
+
+### Confirm GVT-g is working
+
+You should have a `mdev_supported_types` dir under `/sys/bus/pci/devices/$PCI_ADDR/`. Where PCI_ADDR is the pcie address found with `lspci -nnv | grep VGA`.
+
+Example:
+
+```
+# ls /sys/bus/pci/devices/0000\:00\:02.0/mdev_supported_types/
+i915-GVTg_V5_4	i915-GVTg_V5_8
+```
+
+### Passthrough the device to your VM
+
+In my case the VM is a talos VM, and I did it like this:
+
+![intel-gvt-g-passthrough.png](./intel-gvt-g-passthrough.png)
+
+
 ## Install With External Boot Drive
 
 Assumed setup:
