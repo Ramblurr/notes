@@ -48,11 +48,13 @@ markdown_extensions:
   - meta
   - attr_list
   - footnotes
+  - md_in_html
   - pymdownx.details
   - pymdownx.emoji
   - pymdownx.highlight
   - pymdownx.magiclink
   - pymdownx.superfences
+  - pymdownx.details
   - pymdownx.tabbed
   - pymdownx.tasklist
   - toc:

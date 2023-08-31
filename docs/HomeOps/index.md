@@ -1,13 +1,8 @@
-<h1 align="center">
-    Home Ops
-  <br />
-  <br />
-  <img src="https://i.imgur.com/IOkvNr4.png" width="200" height="200">
-</h1>
-<br />
-<div align="center">
+<figure markdown>
+![header](./header.png){ width="200" }
+  <figcaption><h1>Home Ops</h1></figcaption>
+</figure>
 
-</div>
 
 ---
 
@@ -36,12 +31,12 @@ My primary tools for managing my infra:
 
 | Device                                  | Count | OS Disk Size          | Data Disk Size                           | Ram    | Purpose                                                                                  |
 |-----------------------------------------|-------|-----------------------|------------------------------------------|--------|------------------------------------------------------------------------------------------|
-| Supermicro X11SCH-F, Intel Core i3-8100 | 1     | 512GB SSD             | 4x8TB ZFS, 8x12 TB ZFS, 2x1.8TB NVME ZFS | 64GB ECC   | NAS                                                                                      |
+| [Supermicro X11SCH-F, Intel Core i3-8100](./NAS) | 1     | 512GB SSD             | 4x8TB ZFS, 8x12 TB ZFS, 2x1.8TB NVME ZFS | 64GB ECC   | [NAS](./NAS)                                                                                      |
 | Intel NUC 10 i7FNH                      | 3     | 256 GB NVMe (via USB) | 2TB NVMe Ceph, 2TB SDD Ceph              | 64GB   | [Proxmox][proxmox] Hypervisor, [Talos][talos], [Ceph][ceph] Nodes                        |
 | Intel NUC 10 i5FNH                      | 1     | 256 GB NVMe (via USB) | 800MB NVMe Ceph, 2TB SDD Ceph            | 64GB   | Proxmox Hypervisor, [Talos][talos], [Ceph][ceph]  Nodes                                  |
 | Intel NUC 12 WSH i50002                 | 1     | 256 GB                | 800MB NVMe Ceph, 2TB SSD Ceph            | 64GB   | Proxmox Hypervisor, [Talos][talos], [Ceph][ceph] Nodes                                   |
 | Raspberry PI 3 B                        | 3     | 8GB MMC               | N/A                                      | 512 MB | dns1, dns2, wan-lte-failover                                                             |
-| Raspberry PI 4                          | 4     | 8GB MMC               | N/A                                      | 2GB    | [octoprint][octoprint], [mycroft/ovos][ovos], [zigbee2mqtt][zigbee2mqtt], [pikvm][pikmv] |
+| Raspberry PI 4                          | 4     | 8GB MMC               | N/A                                      | 2GB    | [octoprint][octoprint], [mycroft/ovos][ovos], [zigbee2mqtt][zigbee2mqtt], [pikvm][pikvm] |
 
 [proxmox]: https://www.proxmox.com/en/
 [zigbee2mqtt]: https://www.zigbee2mqtt.io/
