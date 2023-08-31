@@ -28,25 +28,35 @@ My primary tools for managing my infra:
 | sops      | encrypt secrets on disk                     |
 | terraform | Configuring a few cloud resources I rely on |
 | flux      | For gitopsing my k8s cluster                |
+| nixos     | because nix is life                         |
 
 ## :computer:&nbsp; Hardware
 
 ### Compute and Storage
 
-| Device                  | Count | OS Disk Size          | Data Disk Size                | Ram    | Purpose                                 |
-|-------------------------|-------|-----------------------|-------------------------------|--------|-----------------------------------------|
-| TrueNAS                 | 1     | 256GB NVMe            | 4x8TB ZFS, 8x12 TB ZFS        | 32GB   | shared storage                          |
-| Intel NUC 10 i7FNH      | 4     | 256 GB NVMe (via USB) | 2TB NVMe Ceph, 2TB SDD Ceph   | 64GB   | Proxmox Nodes                           |
-| Intel NUC 12 WSH i50002 | 1     | 256 GB                | 800TB NVMe Ceph, 2TB SSD Ceph | 64GB   | Proxmox Nodes                           |
-| Raspberry PI 3 B        | 3     | 8GB MMC               | N/A                           | 512 MB | dns1, dns2, wan-lte-failover            |
-| Raspberry PI 4          | 4     | 8GB MMC               | N/A                           | 2GB    | octoprint,  mycroft, zigbee2mqtt, pikvm |
+| Device                                  | Count | OS Disk Size          | Data Disk Size                           | Ram    | Purpose                                                                                  |
+|-----------------------------------------|-------|-----------------------|------------------------------------------|--------|------------------------------------------------------------------------------------------|
+| Supermicro X11SCH-F, Intel Core i3-8100 | 1     | 512GB SSD             | 4x8TB ZFS, 8x12 TB ZFS, 2x1.8TB NVME ZFS | 64GB ECC   | NAS                                                                                      |
+| Intel NUC 10 i7FNH                      | 3     | 256 GB NVMe (via USB) | 2TB NVMe Ceph, 2TB SDD Ceph              | 64GB   | [Proxmox][proxmox] Hypervisor, [Talos][talos], [Ceph][ceph] Nodes                        |
+| Intel NUC 10 i5FNH                      | 1     | 256 GB NVMe (via USB) | 800MB NVMe Ceph, 2TB SDD Ceph            | 64GB   | Proxmox Hypervisor, [Talos][talos], [Ceph][ceph]  Nodes                                  |
+| Intel NUC 12 WSH i50002                 | 1     | 256 GB                | 800MB NVMe Ceph, 2TB SSD Ceph            | 64GB   | Proxmox Hypervisor, [Talos][talos], [Ceph][ceph] Nodes                                   |
+| Raspberry PI 3 B                        | 3     | 8GB MMC               | N/A                                      | 512 MB | dns1, dns2, wan-lte-failover                                                             |
+| Raspberry PI 4                          | 4     | 8GB MMC               | N/A                                      | 2GB    | [octoprint][octoprint], [mycroft/ovos][ovos], [zigbee2mqtt][zigbee2mqtt], [pikvm][pikmv] |
+
+[proxmox]: https://www.proxmox.com/en/
+[zigbee2mqtt]: https://www.zigbee2mqtt.io/
+[pikvm]: https://www.pikvm.io
+[octoprint]: https://octoprint.org/
+[ovos]: https://openvoiceos.github.io/community-docs/
+[talos]: https://talos.dev
+[ceph]: https://ceph.io
 
 
 ### Networking
 
 | Device                                                           | Count |
 |------------------------------------------------------------------|-------|
-| ISP Modem (1Gbit/100Mbit)                                        | 1     |
+| ISP Modem (1Gbit⬇/100Mbit⬆)                                      | 1     |
 | Lenovo M720q VyOS router (i5-8400T, 8GB DDR4)                    | 1     |
 | Unifi Switch 24 port POE                                         | 1     |
 | Unifi Switch Pro 24 port                                         | 1     |
