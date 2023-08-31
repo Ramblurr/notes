@@ -171,7 +171,7 @@ Relevant docs: https://pve.proxmox.com/pve-docs/pve-admin-guide.html#_remove_a_c
 pvecm delnode <NODE NAME>
 # 3. reinstall proxmox on the node
 # 4. ssh into the node you want to rejoin
-pvecm add <ANOTHER-NODE-IP> --use_ssh 1 --link0 address=<MY-DATA-IP>
+pvecm add <ANOTHER-NODE-IP> --use_ssh 1 --link0 <MY-DATA-IP> --link1 <MY-MGMT-IP>
 
 # 5. update certs
 pvecm updatecerts

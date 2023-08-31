@@ -14,6 +14,10 @@ As of 2023-03 I am using VyOS Rolling (based on 1.4/Saggita).
 * [STH's Lenovo Thinkcentre/ThinkStation Tiny (Project TinyMiniMicro) Reference Thread](https://forums.servethehome.com/index.php?threads/lenovo-thinkcentre-thinkstation-tiny-project-tinyminimicro-reference-thread.34925/)
 * [Lenovo M720Q Tiny router/firewall build with aftermarket 4 port NIC](https://smallformfactor.net/forum/threads/lenovo-m720q-tiny-router-firewall-build-with-aftermarket-4-port-nic.14793/)
 
+## Hardware
+
+* PCI-e x16 Riser Card - FRU 5C50W00877 (got mine off ebay)
+
 ## Bootstrap
 
 * Get ISO from https://github.com/Ramblurr/vyos-custom/releases
@@ -59,4 +63,13 @@ Monitor firewall
 
 ```
 monitor firewall name '*' | tee ~/fw.log | grep ...
+```
+
+Upgrade
+
+```
+# 1. Sync latest config
+# 2. Apply latest config
+# 3. Add new system image
+add system image <url>
 ```

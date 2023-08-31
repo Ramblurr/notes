@@ -5,9 +5,9 @@ My 10GbE network is used for Ceph and Proxmox replication.
 ## 10GbE Network Hardware
 | Device                               | Connection              | Card                           |
 |--------------------------------------|-------------------------|--------------------------------|
-| USW-Pro-24                           | SFP+                    | built-in                       |
-| Supermicro TrueNAS Core              | SFP+                    | Intel x520                     |
-| Mikrotik CRS309-1G-8S+IN 10GB Switch | builtin                 | -                              |
+| USW-Pro-24                           | SFP+                    | -                              |
+| Supermicro/i3 based NAS              | SFP+                    | Intel x520 PCIe card           |
+| Mikrotik CRS309-1G-8S+IN 10GB Switch | SFP+                    | -                              |
 | Lenovo M720q VyOS                    | SFP+                    | Mellanox ConnectX-3 Pro CX322A |
 | NUC1                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
 | NUC2                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
