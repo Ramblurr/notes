@@ -1,6 +1,16 @@
 # Proxmox
 
-I run Proxmox VE 7 in a 3 node cluster. Each node has 2x 2TB disk in ZFS RAID 1 (mirror). Each node also has access to NFS via my TrueNAS for shared storage. I've found running Ceph at home to be more trouble that its worth.
+In my five-node cluster running Proxmox VE 7, each Intel NUC node has a unique
+OS disk. For the NUC12s, it's a 40mm NVME, while the NUC10s sport NVMEs in USB 3
+enclosures. For data drives the nodes sport 2TB SATA SSDs and 800GB-2TB NVMEs which are (mostly)
+high-DWPD Micron MAX enterprise drives. These drives are solely dedicated to
+Ceph.
+
+For network connectivity, each node is equipped with a Sonnet Solo 10GbE
+adapter. Ceph operations run over these 10GbE links, while Proxmox's corosync
+primarily uses a 1GbE management VLAN, with the 10GbE as a fallback. 
+
+Overall I am pleased with this setup and it is the foundation of my k8s cluster.
 
 ## iGPU Passthrough to VM (Intel Integrated Graphics)
 

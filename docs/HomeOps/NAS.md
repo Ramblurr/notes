@@ -23,6 +23,20 @@ My NAS is a self-built 3U server.
 
 [os]: https://github.com/ramblurr/nixcfg
 
+## NixOS
+
+In the Summer of 2023 I migrated from TrueNAS Core to a custom NixOS
+configuration for my NAS. You can browse the [NAS' NixOS config on
+github][malinix]
+
+The NAS' main job is to shepherd the ZFS pools, serve up NFS and a few SMB
+shares. It also runs minio to provide object storage for some services in my k8s
+cluster.
+
+[zrepl](https://github.com/zrepl/zrepl) is used to replicate snapshots to an offsite TrueNAS Core.
+
+[malinix]: https://github.com/Ramblurr/nixcfg/blob/main/hosts/stable/x86_64-linux/mali/README.md
+
 ## Fan Notes
 
 | Fan                          | Size  | Port           |
