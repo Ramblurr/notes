@@ -69,6 +69,39 @@ sensor thresh <id> upper <unc> <ucr> <unr>
 
 ![](./motherboard-x11sch-f-quick-reference.png)
 
+## Migrating Encrypted ZFS pool from TrueNAS Core to Linux (NixOS)
+
+**Problem**
+
+You want to move an encrypted ZFS pool (or pools) from TrueNAS Core to a Linux install.
+
+**Preconditions**
+* This does NOT apply to zfs pools you want to use as a root pool. This is only for other pools.
+* You still have access to your TrueNAS Core install, or have backups of the keys 
+* All services expecting to find data on the mounted pool are stopped/turned off.
+* Your Linux install is already set to go and the disks are plugged in and `zpool import` shows your pool ready to be imported.
+
+
+**Out of Scope**
+
+This procedure *just* describes how to import and mount the pool, and does not cover migrating any data or services. If you have shares or services on TrueNAS you probably need to document them thouroughly before migrating. This includes not just app configs but also system configs (users/uids, groups/gids, etc).
+
+**Procedure**
+
+1. Make sure you have exported the dataset keys for any encrypted pools/datasets in TrueNAS Core
+2. Did you export the dataset keys? Did you copy them somewhere safe?
+3. From your new Linux install import the pool `zpool import -f -N tank` the `-N` flag ensures the datasets are not mounted to the VFS.
+4. Load the key `zfs load-key tank`, enter the hexadecimal key you saved in step 1.
+5. Write the encryption keys somewhere safe where only root only has read access.
+5. Change the key location `zfs change-key -o keylocation=file://.... tank`
+6. If you do a `zfs list -r tank` you will notice the mount point doesn't have the `/mnt` prefix that we normally see in TrueNAS Core
+7. So now you want to change the mountpoint to be in `/mnt` where all your services are expecting it to be `zfs set mountpoint=/mnt/tank tank`
+8. Export the pool `zpool export tank`
+9. Import it again, this time omitting the `-N` flag so it mounts the datasets. Pass `-l` to load the key automatically from the new location.
+    * `zpool import -l tank`
+
+If you need to do this for multiple pools, just repeat the procedure with a different pool name.
+
 ## Notes About LSI 9211-8I SAS card
 
 ### An Unhappy HBA Card
