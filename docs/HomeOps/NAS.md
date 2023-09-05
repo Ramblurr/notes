@@ -1,6 +1,11 @@
 # NAS
 
-My NAS is a self-built 3U server.
+My NAS is a self-built 3U server that runs the following services:
+
+* NFS
+* Samba
+* Minio (S3-like Object Storage)
+* Borgbackup repo target
 
 ## Hardware
 
@@ -22,6 +27,9 @@ My NAS is a self-built 3U server.
     * 1x 111.79 GiB Intenso SSD SATAIII (OS Disk)
 
 [os]: https://github.com/ramblurr/nixcfg
+
+
+![my rack](./rack-middle.jpg)
 
 ## NixOS
 
@@ -122,6 +130,9 @@ If you need to do this for multiple pools, just repeat the procedure with a diff
 
 I got my card used, who knows how long it had been used, but it was probably an old card when I got it. In the summer here the operating conditions of my network rack can be 30-35 C. Intermittently for several years I had reliability problems with this card. On TrueNAS CORE this manifested with kernel panics and spontaneous reboots. I improved the cooling situation in the chassis and that helped a little bit, but during the hot months and when there was high-load I would still get kernel panics and reboots.
 
+Here's a screencap I managed of freebsd crashing:
+![Image title](./truenas-hba-crashing.png){ align=left }
+
 I ended up removing the heat sink, cleaning of the thermal epoxy and applying my
 own thermal paste. I then used two female M2.5 Standoffs and M2.5 button socket
 head screws to attach a Noctua 40mm fan and the heatsink to the card. Noctua is
@@ -135,12 +146,10 @@ took quite a lot of force, but it came off and I was able to clean and apply the
 thermal paste easily.
 
 
-Here's a screencap I managed of freebsd crashing:
-![](./truenas-hba-crashing.png)
-
-Sources:
-
-* [How To : Change the heat sink TIM on an LSI SAS card](https://forums.unraid.net/topic/59856-how-to-change-the-heat-sink-tim-on-an-lsi-sas-card/) [archive](https://web.archive.org/web/2/https://forums.unraid.net/topic/59856-how-to-change-the-heat-sink-tim-on-an-lsi-sas-card/) (unfortunately the images are dead).
+|                                           |                                         |
+|-------------------------------------------|-----------------------------------------|
+| ![](lsi-heatsink.jpg) Pre-operation       | ![](lsi-chip.jpg) The heatsink removed  |
+| ![](lsi-fan-side.jpg) Post-operation side | ![](lsi-fan-top.jpg) Post-operation top |
 
 ??? note "Excerpts from NixOS/Linux `dmesg` (expand to see)"
 
@@ -329,6 +338,10 @@ Sources:
 * Unraid Forums [(Solved/Workaround)HBA/SAS Issues. Raid failing.](https://forums.unraid.net/topic/77740-solvedworkaroundhbasas-issues-raid-failing/) [archive](https://web.archive.org/web/20230831132426/https://forums.unraid.net/topic/77740-solvedworkaroundhbasas-issues-raid-failing/)
 * Unraid Forums [SAS host is non-operational !!!!](https://forums.unraid.net/topic/111058-sas-host-is-non-operational/) [archive](https://web.archive.org/web/20230831132522/https://forums.unraid.net/topic/111058-sas-host-is-non-operational/)
 * Kernel [Bug 209177 - mpt2sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10791/_scsih_probe()!](https://bugzilla.kernel.org/show_bug.cgi?id=209177) [archive](https://web.archive.org/web/20230831132947/https://bugzilla.kernel.org/show_bug.cgi?id=209177)
+
+**Sources**:
+
+* [How To : Change the heat sink TIM on an LSI SAS card](https://forums.unraid.net/topic/59856-how-to-change-the-heat-sink-tim-on-an-lsi-sas-card/) [archive](https://web.archive.org/web/2/https://forums.unraid.net/topic/59856-how-to-change-the-heat-sink-tim-on-an-lsi-sas-card/) (unfortunately the images are dead).
 
 ### Check current firmware version of LSI 9211-8I
 

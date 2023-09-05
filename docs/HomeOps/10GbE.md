@@ -15,6 +15,8 @@ My 10GbE network is used for Ceph and Proxmox replication.
 | NUC4                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
 | NUC5                                 | SFP+ over Thunderbolt 3 | Sonnet ‎SOLO10G-SFP-T3          |
 
+![my rack](./rack-top.jpg)
+![my rack](./rack-middle.jpg)
 
 ## Lenovo Thinkcentre M720q
 
